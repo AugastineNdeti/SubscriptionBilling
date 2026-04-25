@@ -7,6 +7,7 @@ namespace SubscriptionBilling.Application
 {
     // --- DTOS ---
     public record InvoiceDto(Guid Id, decimal Amount, bool IsPaid, DateTime IssuedAt);
+    public record CreatedIdResponseDto(Guid Id);
 
     // --- COMMANDS ---
     public record CreateCustomerCommand(string Name, string Email) : IRequest<Guid>;
@@ -39,7 +40,7 @@ namespace SubscriptionBilling.Application
 
             if (exists)
             {
-                // Because we added the Global Exception Middleware earlier, 
+                // Because we added the Global Exception Middleware, 
                 // throwing this will automatically return a nice 400 Bad Request to the user
                 throw new InvalidOperationException($"A customer with the email '{request.Email}' already exists.");
             }

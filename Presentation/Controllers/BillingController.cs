@@ -24,7 +24,8 @@ namespace SubscriptionBilling.Presentation.Controllers
         public async Task<IActionResult> CreateSubscription(CreateSubscriptionCommand cmd)
         {
             var id = await _mediator.Send(cmd);
-            return Ok(new ApiResponse<Guid>(true, "Subscription created and first invoice generated", id));
+            var response = new CreatedIdResponseDto(id);
+            return Ok(new ApiResponse<CreatedIdResponseDto>(true, "Subscription created and first invoice generated", response));
         }
 
         [HttpPost("subscriptions/{id}/cancel")]
