@@ -20,32 +20,46 @@ A C# .NET Core implementation demonstrating domain-driven design (DDD) and clean
 ## Design Decisions & Architecture
 
 ### 1. Clean Architecture
-I structured the solution into layers to ensure strict boundaries:
-- **Domain:** Contains the business logic, entities, and domain events. It has zero dependencies on external libraries.
-- **Application:** Handles the use cases (Commands/Queries) and orchestration.
-- **Infrastructure:** Implements persistence using EF Core (In-Memory for this challenge).
-- **Api:** The entry point using Minimal APIs/Controllers.
+The solution follows Clean Architecture with strict layer separation and minimal cross-layer dependencies:
 
-### 2. DDD (Domain-Driven Design)
-I avoided the "Anemic Domain Model" anti-pattern. Instead of having dumb property bags, I moved business rules inside the Aggregates (e.g., `Invoice.MarkAsPaid()` handles its own validation logic). This ensures the domain is always in a valid state.
+- **Domain Layer** – Core business logic, aggregates, entities, value objects, and domain events. Zero external dependencies.
+- **Application Layer** – Use case orchestration through Commands and Queries (CQRS pattern).
+- **Infrastructure Layer** – Data persistence using EF Core with in-memory database.
+- **API Layer** – HTTP entrypoint with minimal endpoints.
+
+### 2. Design Patterns
+### DDD (Domain-Driven Design)
+Avoided the "Anemic Domain Model" anti-pattern. Instead of having dumb property bags, I moved business rules inside the Aggregates (e.g., `Invoice.MarkAsPaid()` handles its own validation logic). This ensures the domain is always in a valid state.
 
 ### 3. CQRS with MediatR
-I used **MediatR** to separate read and write operations. 
+-Used **MediatR** to separate read and write operations. 
 - **Commands** (Create/Cancel/Pay) modify state.
 - **Queries** (GetInvoices) fetch data without side effects.
 This makes the code much easier to maintain and scale as the system grows.
 
 ### 4. Domain Events
-To satisfy the rule "Activating a subscription generates the first invoice," I implemented **Domain Events**. 
-- When a `Subscription` is created, it raises a `SubscriptionActivated` event.
-- A handler in the Application layer listens for this event and automatically creates the initial `Invoice`. 
-This keeps the Subscription and Invoice logic decoupled.
+The system publishes domain events to decouple aggregates and enable complex workflows:
+- `SubscriptionActivated` – Triggered when a subscription is created
+- `InvoiceGenerated` – Raised whenever a new invoice is created
+- `PaymentReceived` – Published when an invoice is paid
 
-### 5. Manual Mapping
-Per the requirements, I chose **not** to use AutoMapper. I implemented manual mapping in the Query handlers to ensure full control over the DTO shapes and to avoid the overhead/complexity of reflection-based mappers.
+Event handlersorchestrate cross-aggregate operations. For instance, when `SubscriptionActivated` is published, an Application layer handler automatically generates the first invoice.
+
+
+### 5. Manual DTO Mapping
+
+Intentionally avoids reflection-based mappers (e.g., AutoMapper) to maintain explicit control over data shape transformations and reduce abstraction overhead.
 
 ---
+## API Endpoints
 
+- `POST /customers` – Create a new customer
+- `POST /subscriptions` – Create and activate a subscription
+- `DELETE /subscriptions/{id}` – Cancel a subscription
+- `POST /invoices/{id}/pay` – Mark an invoice as paid
+- `GET /invoices` – Retrieve invoices with filtering options
+
+- 
 ## Capabilities
 This implementation includes:
 - **Three aggregates** with enforced business invariants (Customer, Subscription, Invoice)
