@@ -7,7 +7,8 @@ A C# .NET Core implementation demonstrating domain-driven design (DDD) and clean
 1. Ensure you have the **.NET 10 SDK** installed.
 2. Clone the repository.
 3. Open a terminal in the root folder and run:
-   ```   dotnet run --project SubscriptionBilling
+   ```
+	dotnet run
    ```
 4. Once running, navigate to `http://localhost:[YOUR_PORT]/swagger` to interact with the API.
 5. To run the tests:
