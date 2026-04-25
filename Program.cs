@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SubscriptionBilling.Infrastructure;
+using SubscriptionBilling.Presentation.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();// added this for global error handling
 
 app.MapControllers();
 

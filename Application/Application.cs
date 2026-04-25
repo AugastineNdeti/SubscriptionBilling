@@ -32,6 +32,18 @@ namespace SubscriptionBilling.Application
 
         public async Task<Guid> Handle(CreateCustomerCommand request, CancellationToken ct)
         {
+            // 1. Check if the email is already taken
+            // We do this here because the database (In-Memory) won't stop us
+            var exists = await _context.Customers
+                .AnyAsync(c => c.Email.ToLower() == request.Email.ToLower(), ct);
+
+            if (exists)
+            {
+                // Because we added the Global Exception Middleware earlier, 
+                // throwing this will automatically return a nice 400 Bad Request to the user
+                throw new InvalidOperationException($"A customer with the email '{request.Email}' already exists.");
+            }
+
             var customer = new Customer(request.Name, request.Email);
             _context.Customers.Add(customer);
             await _context.SaveChangesAsync(ct);

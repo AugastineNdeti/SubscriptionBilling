@@ -1,6 +1,6 @@
 [
   {
-    "ContainingType": "SubscriptionBilling.Controllers.BillingController",
+    "ContainingType": "SubscriptionBilling.Presentation.Controllers.BillingController",
     "Method": "CreateCustomer",
     "RelativePath": "api/Billing/customers",
     "HttpMethod": "POST",
@@ -16,7 +16,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "SubscriptionBilling.Controllers.BillingController",
+    "ContainingType": "SubscriptionBilling.Presentation.Controllers.BillingController",
     "Method": "GetInvoices",
     "RelativePath": "api/Billing/invoices",
     "HttpMethod": "GET",
@@ -26,7 +26,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "SubscriptionBilling.Controllers.BillingController",
+    "ContainingType": "SubscriptionBilling.Presentation.Controllers.BillingController",
     "Method": "PayInvoice",
     "RelativePath": "api/Billing/invoices/{id}/pay",
     "HttpMethod": "POST",
@@ -42,7 +42,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "SubscriptionBilling.Controllers.BillingController",
+    "ContainingType": "SubscriptionBilling.Presentation.Controllers.BillingController",
     "Method": "CreateSubscription",
     "RelativePath": "api/Billing/subscriptions",
     "HttpMethod": "POST",
@@ -58,7 +58,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "SubscriptionBilling.Controllers.BillingController",
+    "ContainingType": "SubscriptionBilling.Presentation.Controllers.BillingController",
     "Method": "CancelSubscription",
     "RelativePath": "api/Billing/subscriptions/{id}/cancel",
     "HttpMethod": "POST",

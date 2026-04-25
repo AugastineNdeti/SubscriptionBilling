@@ -22,22 +22,26 @@ namespace SubscriptionBilling.Infrastructure
 
         public override async Task<int> SaveChangesAsync(CancellationToken ct = default)
         {
-            // I grab all entities that have events before saving
+            // 1. Identify all entities with events
             var entitiesWithEvents = ChangeTracker.Entries<AggregateRoot>()
-                .Select(e => e.Entity)
-                .Where(e => e.DomainEvents.Any())
+                .Where(e => e.Entity.DomainEvents.Any())
                 .ToList();
 
+            // 2. Extract the events
+            var domainEvents = entitiesWithEvents
+                .SelectMany(e => e.Entity.DomainEvents)
+                .ToList();
+
+            // 3. Clear events BEFORE publishing to prevent recursion
+            entitiesWithEvents.ForEach(e => e.Entity.ClearDomainEvents());
+
+            // 4. Save to DB
             var result = await base.SaveChangesAsync(ct);
 
-            // We dispatch events AFTER saving to ensure data consistency
-            foreach (var entity in entitiesWithEvents)
+            // 5. Publish events (Handlers might call SaveChanges again, but events are now cleared)
+            foreach (var @event in domainEvents)
             {
-                foreach (var @event in entity.DomainEvents)
-                {
-                    await _publisher.Publish(@event, ct);
-                }
-                entity.ClearDomainEvents();
+                await _publisher.Publish(@event, ct);
             }
 
             return result;
