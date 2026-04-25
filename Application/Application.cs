@@ -1,4 +1,6 @@
-﻿using SubscriptionBilling.Domain.Aggregates;
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
+using SubscriptionBilling.Domain.Aggregates;
 using SubscriptionBilling.Domain.Common;
 
 namespace SubscriptionBilling.Application
@@ -13,15 +15,15 @@ namespace SubscriptionBilling.Application
     public record PayInvoiceCommand(Guid InvoiceId) : IRequest;
 
     // --- QUERIES ---
-    public record GetInvoicesQuery() : IRequest<List<InvoiceDto>>;
+    public record GetInvoicesQuery() : IRequest<List<InvoiceDto>>;//This Query must specify what it returns
 
     // --- HANDLERS ---
     public class BillingHandlers :
         IRequestHandler<CreateCustomerCommand, Guid>,
         IRequestHandler<CreateSubscriptionCommand, Guid>,
         IRequestHandler<CancelSubscriptionCommand>,
-        IRequestHandler<PayInvoiceCommand>,
-        IRequestHandler<GetInvoicesQuery>,
+        IRequestHandler<PayInvoiceCommand>,//this returns void, so we use IRequest without a type parameter
+        IRequestHandler<GetInvoicesQuery,List<InvoiceDto>>,//this returns a list of InvoiceDto, so we specify that as the type parameter
         INotificationHandler<SubscriptionActivated> // Handling domain event
     {
         private readonly Infrastructure.BillingDbContext _context;

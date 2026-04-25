@@ -1,4 +1,6 @@
-﻿namespace SubscriptionBilling.Domain.Common
+﻿using MediatR;
+
+namespace SubscriptionBilling.Domain.Common
 {
     // A simple base for our aggregates to handle domain events
     public abstract class AggregateRoot
@@ -12,7 +14,7 @@
     }
 
     // Domain Events
-    public record SubscriptionActivated(Guid SubscriptionId, Guid CustomerId, decimal Amount);
-    public record InvoiceGenerated(Guid InvoiceId, Guid SubscriptionId, decimal Amount);
-    public record PaymentReceived(Guid InvoiceId, decimal Amount);
+    public record SubscriptionActivated(Guid SubscriptionId, Guid CustomerId, decimal Amount):INotification;
+    public record InvoiceGenerated(Guid InvoiceId, Guid SubscriptionId, decimal Amount):INotification;
+    public record PaymentReceived(Guid InvoiceId, decimal Amount):INotification;
 }
